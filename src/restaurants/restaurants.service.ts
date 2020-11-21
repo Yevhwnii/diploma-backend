@@ -110,4 +110,8 @@ export class RestaurantsService {
     const menu = await this.menuModel.findById(id).populate('items');
     return menu;
   }
+
+  async deleteRestaurant(id: string): Promise<void> {
+    await this.restaurantModel.findByIdAndDelete(id);
+  }
 }
