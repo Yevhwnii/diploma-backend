@@ -7,6 +7,7 @@ import {
   UsePipes,
   ValidationPipe,
   Logger,
+  Delete,
 } from '@nestjs/common';
 import { CreateRestaurantDto } from './dto/createRestaurant.dto';
 import { RestaurantsService } from './restaurants.service';
@@ -37,5 +38,10 @@ export class RestaurantsController {
   @Get('menu/:id')
   async getMenu(@Param('id') id: string) {
     return await this.restaurantService.getMenu(id);
+  }
+
+  @Delete(':id')
+  async delete(@Param('id') id: string) {
+    return await this.restaurantService.deleteRestaurant(id);
   }
 }
