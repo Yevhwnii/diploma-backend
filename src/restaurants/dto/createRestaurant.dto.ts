@@ -3,8 +3,8 @@ import {
   IsNotEmptyObject,
   IsOptional,
   IsString,
-  IsUrl,
   Length,
+  MinLength,
 } from 'class-validator';
 import { Menu } from '../menu.schema';
 import { Location } from '../restaurant.schema';
@@ -17,12 +17,11 @@ export class CreateRestaurantDto {
 
   @IsNotEmpty()
   @IsString()
-  @Length(5, 50)
+  @Length(5, 250)
   description: string;
 
   @IsNotEmpty()
-  @IsUrl()
-  @Length(5)
+  @MinLength(5)
   imageUrl: string;
 
   @IsNotEmpty()
