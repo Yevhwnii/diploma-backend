@@ -8,7 +8,9 @@ import {
   ValidationPipe,
   Logger,
   Delete,
+  UseGuards,
 } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { CreateRestaurantDto } from './dto/createRestaurant.dto';
 import { RestaurantsService } from './restaurants.service';
 
@@ -18,6 +20,7 @@ export class RestaurantsController {
 
   constructor(private readonly restaurantService: RestaurantsService) {}
 
+  @UseGuards(AuthGuard())
   @Post()
   @UsePipes(ValidationPipe)
   async create(@Body() createRestaurantDto: CreateRestaurantDto) {
@@ -40,6 +43,7 @@ export class RestaurantsController {
     return await this.restaurantService.getMenu(id);
   }
 
+  @UseGuards(AuthGuard())
   @Delete(':id')
   async delete(@Param('id') id: string) {
     return await this.restaurantService.deleteRestaurant(id);
