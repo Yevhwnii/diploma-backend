@@ -106,6 +106,51 @@ export class RestaurantsService {
     return restaurants;
   }
 
+  async search(query: string) {
+    const restaurants = await this.restaurantModel
+      .find({
+        name: { $regex: '.*' + query + '.*', $options: 'i' },
+      })
+      .exec();
+
+    const menuItems = await this.menuItemModel
+      .find({ category: { $regex: '.*' + query + '.*', $options: 'i' } })
+      .exec();
+    const menus = await this.menuModel
+      .find()
+      .populate({
+        path: 'items',
+        model: MenuItem.name,
+      })
+      .exec();
+    const allRestaurants = await this.restaurantModel.find().exec();
+
+    const menusWithFoundMenuItems = [];
+    menuItems.forEach(menuItem => {
+      menus.forEach(menu => {
+        menu.items.forEach(item => {
+          if (item.id === menuItem.id) {
+            menusWithFoundMenuItems.push(menu);
+          }
+        });
+      });
+    });
+
+    const restaurantWithFoundMenus: RestaurantDocument[] = [];
+    allRestaurants.forEach(restaurant => {
+      menusWithFoundMenuItems.forEach(menu => {
+        if (restaurant.menu.toString() === menu.id.toString()) {
+          restaurantWithFoundMenus.push(restaurant);
+        }
+      });
+    });
+
+    return {
+      restaurants: restaurants,
+      restaurantWithMenuLike: restaurantWithFoundMenus,
+    };
+  }
+
   async getMenu(id: string) {
     const menu = await this.menuModel.findById(id).populate('items');
     return menu;
