@@ -9,6 +9,7 @@ import {
   Logger,
   Delete,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { CreateRestaurantDto } from './dto/createRestaurant.dto';
@@ -31,6 +32,12 @@ export class RestaurantsController {
   @Get()
   async getAll() {
     return await this.restaurantService.getAllRestaurants();
+  }
+
+  @Get('/search')
+  async search(@Query() query: { q: string }) {
+    const { q } = query;
+    return this.restaurantService.search(q);
   }
 
   @Get(':id')
